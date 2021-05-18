@@ -1,75 +1,160 @@
 'use strict';
 
 let allMobiles = [];
+let resultDiv = document.getElementById('result');
 
-function Mobile(userName, type, price, condition){
+
+function Mobile(userName, type){
     this.userName = userName,
     this.type = type,
-    this.price = 0,
-    this.condition = condition,
+    this.price = [],
+    this.condition = [];
+
 
     allMobiles.push(this);
 }
 
-
-Mobile.prototype.mobilePrice = function(){
+Mobile.prototype.calcPrice = function(){
     this.price.push(Math.floor(Math.random() * (500 - 100) ) + 100);
+
 }
 
-// console.log(allMobiles.price)
+Mobile.prototype.declareCondition= function(){
 
-
-Mobile.prototype.condition = function(){
-    if(mobilePrice() < 200){
-        this.condition = 'Used';
-    } else if (mobilePrice() >= 200){
-        this.condition = 'New';
+    if(this.price < 200){
+        this.condition.push('Old');
+    } else{
+        this.condition.push('New');
     }
 }
 
 
-let form = document.getElementById('form');
-form.addEventListener('submit', submitter);
 
-function submitter(event){
+let form = document.getElementById('form');
+
+form.addEventListener('submit', submitHandler);
+
+function submitHandler(event){
     event.preventDefault();
 
     let userName = event.target.userName.value;
-    // this.userName = userName;
+    let phones = event.target.phones.value;
 
-    let type = event.target.type.value;
+    let newInstance = new Mobile(userName, phones);
+    newInstance.calcPrice();
+    newInstance.declareCondition();
 
-    // let price = ;
 
-    
-    // newInstance.render();
-    
-    
-    let newInstance = new Mobile(userName, type, price, condition);
+  
+    newInstance.render();
+   
+   
+    localStorage.setItem('mobile',JSON.stringify(allMobiles));
+   
 }
 
-let resultDiv = document.getElementById('result');
+
+function cheaklocalstorage(){
+    if(localStorage.getItem('mobile')){
+      allMobiles=JSON.parse(localStorage.getItem('mobile'));
+      render();
+    }
+  }
 let table = document.createElement('table');
-resultDiv.appendChild(table);
+resultDiv.appendChild(table)
+let titleRow = document.createElement('tr');
+table.appendChild(titleRow);
 
-Mobile.prototype.render = function () {
-    let firstTh = document.createElement('th');
-    table.appendChild(firstTh);
-    firstTh.textContent = 'User';
+function makeHeader(){
 
-    let secTh = document.createElement('th');
-    table.appendChild(secTh);
-    secTh.textContent = 'Type';
+   let userTh = document.createElement('th');
+   titleRow.appendChild(userTh);
+   userTh.textContent = "User";
 
-    let thirdTh = document.createElement('th');
-    table.appendChild(thirdTh);
-    thirdTh.textContent = 'Price';
+   let typeTh = document.createElement('th');
+   titleRow.appendChild(typeTh);
+   typeTh.textContent = "Type";
 
-    let fourthTh = document.createElement('th');
-    table.appendChild(fourthTh);
-    fourthTh.textContent = 'Condition';
+   let priceTh = document.createElement('th');
+   titleRow.appendChild(priceTh);
+   priceTh.textContent = "Price";
 
-    // let firstRow =
+   let conditionTh = document.createElement('th');
+   titleRow.appendChild(conditionTh);
+   conditionTh.textContent = "Condition";
+
 }
 
-// console.log(allMobiles.price)
+
+
+Mobile.prototype.render = function(){
+  
+    
+    let secondRow = document.createElement('tr');
+    table.appendChild(secondRow);
+    
+    
+
+    let userName = document.createElement('td');
+    secondRow.appendChild(userName);
+
+    let type = document.createElement('td');
+    secondRow.appendChild(type);
+
+    let price = document.createElement('td');
+    secondRow.appendChild(price);
+
+    let condition = document.createElement('td');
+    secondRow.appendChild(condition);
+
+    for(let i=0; i<allMobiles.length; i++){
+        
+    userName.textContent = this.userName;
+    type.textContent = this.type;
+    price.textContent = this.price;
+    condition.textContent = this.condition;
+    }
+    
+    
+   
+    
+}
+
+
+function render(){
+    let array = [];
+    array = JSON.parse(localStorage.getItem('mobile'));
+    
+    
+    
+
+   
+
+    for(let i=0; i<array.length; i++){
+        let newSecondRow = document.createElement('tr');
+    table.appendChild(newSecondRow);
+
+        let userName = document.createElement('td');
+        newSecondRow.appendChild(userName);
+    
+         let type = document.createElement('td');
+         newSecondRow.appendChild(type);
+    
+         let price = document.createElement('td');
+         newSecondRow.appendChild(price);
+    
+         let condition = document.createElement('td');
+         newSecondRow.appendChild(condition);
+    userName.textContent = array[i].userName;
+     type.textContent = array[i].type;
+     price.textContent = array[i].price;
+     condition.textContent = array[i].condition;
+    }
+    
+    
+   
+    
+}
+
+makeHeader();
+cheaklocalstorage()
